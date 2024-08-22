@@ -31,7 +31,9 @@ yahoo_finance_tool = Tool(
 )
 
 # IMPORTANDO OPENAI LLM - GPT
-os.environ["OPENAI_API_KEY"] = st.secrets["OPEN_API_KEY"]
+os.environ["OPENAI_API_KEY"] = st.secrets[
+    "OPEN_API_KEY"
+]  # Pega a KEY da Open AI registrada no Streamlit cloud
 llm = ChatOpenAI(model="gpt-3.5-turbo")
 
 # Agente da CrewAI que recebe a ferramenta do Yahoo Finance
@@ -173,16 +175,20 @@ crew = Crew(
 # Chamada da execução da crew
 # results= crew.kickoff(inputs={'ticket': 'AAPL})
 
-with st.sidebar:
-    st.header("Enter the Stock to Research")
 
-    with st.form(key="research_form"):
-        topic = st.text_input("Select the ticket")
-        submit_button = st.form_submit_button(label="Run Research")
+# Criação da página Web
+with st.sidebar:  # Cria um sidebar
+    st.header("Enter the Stock to Research")  # Cria um header
+
+    with st.form(key="research_form"):  # Cria um form
+        topic = st.text_input("Select the ticket")  # Recebe um input do usuário
+        submit_button = st.form_submit_button(
+            label="Run Research"
+        )  # Botão de enviar o form
 if submit_button:
-    if not topic:
+    if not topic:  # Se o botão for pressionado e não passar o topic, apresenta um erro
         st.error("Please fill the ticket field")
-    else:
+    else:  # Caso seja passado o topic executa os Agentes de IA com o topico passado pelo usuario
         results = crew.kickoff(inputs={"ticket": topic})
 
         st.subheader("Results of research:")
